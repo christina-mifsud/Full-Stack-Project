@@ -25,6 +25,7 @@ const db = new Pool({
   ssl: true,
 });
 
+///////////////// HELP! This was causing server to disconnect and reconnect ///////////////////
 // db.connect(function (err) {
 //   // we are telling server to connect to db
 //   if (err) throw err;
@@ -86,6 +87,26 @@ app.get("/:id", async function (request, response) {
     response.status(400).json(error);
   }
 });
+
+////////////////////// finish PUT request to update rating //////////////////////
+
+// PUT "/{id}"
+// Updates the video rating
+app.put("/:id", async function (request, response) {
+  try {
+    let videoId = parseInt(request.params.id);
+    const videoRating = request.body.rating;
+    console.log(videoRating);
+    const dbResult = await db.query(
+      `UPDATE videos SET rating = rating${videoRating} WHERE id=${videoId}`
+    );
+    response.send(`Video rating updated!`);
+  } catch (error) {
+    response.status(400).json(error);
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////
 
 // DELETE "/{id}"
 // Deletes the video with the ID container within the {id} parameter
